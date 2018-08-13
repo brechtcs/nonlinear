@@ -1,0 +1,19 @@
+{
+  "scripts": {
+    "test": "standard"
+  },
+  "dependencies": {
+    "abstract-router": "^2.1.1",
+    "atomic-file": "^1.1.5",
+    "ecstatic": "^3.2.1",
+    "express": "^4.16.3",
+    "fisher-yates": "^1.0.3",
+    "lru": "^3.1.0",
+    "moment": "^2.22.2",
+    "nanohtml": "^1.2.4",
+    "twit": "^2.2.11"
+  },
+  "devDependencies": {
+    "standard": "^10.0.3"
+  }
+}
