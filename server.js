@@ -24,7 +24,7 @@ module.exports = function (app) {
 
   server.listen(port, (err) => {
     if (err) throw err
-    else app.props.logger.info('Listening at localhost:' + port)
+    else app.logger.info('Listening at localhost:' + port)
   })
 }
 
