@@ -100,7 +100,7 @@ class Twitter {
       return thread.reverse()
     } catch (e) {
       console.warn(id, e.message)
-      return []
+      return thread.reverse()
     }
   }
 }
