@@ -10,7 +10,7 @@ module.exports.channel = function (channel, link) {
         <p>${raw(channel.description)}</p>
     </div>`
 
-  return tile(channel, content, channel.updated > channel.visited)
+  return tile(channel, content, channel.updated > channel.visited, channel.top)
 }
 
 module.exports.status = function (status, visited) {
@@ -23,11 +23,11 @@ module.exports.status = function (status, visited) {
         <p>${raw(status.content)}</p>
     </div>`
 
-  return tile(channel, content, status.updated > visited)
+  return tile(channel, content, status.updated > visited, false)
 }
 
-function tile (channel, content, highlight) {
-  return html`<div class="tile" style="opacity:${highlight ? 1 : 0.62}">
+function tile (channel, content, highlight, top) {
+  return html`<div class="tile ${highlight ? 'tile-highlight' : ''} ${top ? 'tile-top' : ''}">
         <img src=${channel.avatar}>
         ${content}
     </div>`

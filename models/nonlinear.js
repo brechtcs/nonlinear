@@ -49,11 +49,15 @@ class Nonlinear {
     }).map(page => {
       var uri = page.split('/')[2]
       var match = this.channels.find(channel => channel.uri === uri)
+      if (match) match.top = true
       return match
     }).filter(channel => !!channel).slice(0, this.opts.rankTop)
 
     return this.channels.reduce((list, channel) => {
-      if (list.indexOf(channel) === -1) list.push(channel)
+      if (list.indexOf(channel) === -1) {
+        channel.top = false
+        list.push(channel)
+      }
       return list
     }, top).map(channel => {
       var visited = this.log[`/${channel.medium}/${channel.uri}`]
