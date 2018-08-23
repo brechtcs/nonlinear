@@ -3,29 +3,31 @@ var Twitter = require('./twitter')
 var shuffle = require('fisher-yates/inplace')
 
 class Nonlinear {
-  static async start (file, opts) {
-    var storage = new AtomicFile(file)
-    var nonlinear = new Nonlinear(storage, opts)
+  static init (opts) {
+    return new Nonlinear(opts)
+  }
 
-    if (opts.accounts) {
-      nonlinear.twitter = await Twitter.init(opts.accounts.twitter)
+  constructor (opts) {
+    this.log = {}
+    this.opts = opts || {}
+    this.started = Date.now()
+
+    if (!this.opts.rankTop) this.opts.rankTop = 7
+  }
+
+  async start (file, accounts) {
+    this.storage = new AtomicFile(file)
+
+    if (accounts) {
+      this.twitter = await Twitter.init(accounts.twitter)
     }
 
     return new Promise((resolve, reject) => {
-      storage.get((err, log) => {
-        if (!err) nonlinear.log = log
-        resolve(nonlinear)
+      this.storage.get((err, log) => {
+        if (!err) this.log = log
+        resolve()
       })
     })
-  }
-
-  constructor (storage, opts) {
-    this.log = {}
-    this.opts = opts || {}
-    this.storage = storage
-    this.start = Date.now()
-
-    if (!this.opts.rankTop) this.opts.rankTop = 12
   }
 
   logVisit (url) {
@@ -55,7 +57,7 @@ class Nonlinear {
       return list
     }, top).map(channel => {
       var visited = this.log[`/${channel.medium}/${channel.uri}`]
-      channel.visited = visited || this.start
+      channel.visited = visited || this.started
       return channel
     })
   }

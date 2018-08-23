@@ -1,16 +1,17 @@
-var ecstatic = require('ecstatic')
+var {nonlinear, router} = require('./app')
+var accounts = require('./accounts')
+var serveStatic = require('serve-static')
 var express = require('express')
 
-module.exports = function (app) {
+router.impl(async function (app) {
+  await nonlinear.start('data.json', accounts)
+
   var port = process.env.PORT || 5003
   var server = express()
 
   app.keep('logger', createLogger())
 
-  server.use(ecstatic({
-    root: `${__dirname}/assets`,
-    showdir: false
-  }))
+  server.use(serveStatic('assets'))
 
   server.use((req, res) => {
     app.clean()
@@ -26,7 +27,7 @@ module.exports = function (app) {
     if (err) throw err
     else app.logger.info('Listening at localhost:' + port)
   })
-}
+})
 
 function createViewMethod (res) {
   var wrapView = function (body) {
