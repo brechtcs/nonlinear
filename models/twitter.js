@@ -4,21 +4,12 @@ var Status = require('./status')
 var Twit = require('twit')
 
 class Twitter {
-  static async init (account) {
-    var twitter = new Twitter(account)
-    var data = await twitter.get('friends/ids', {stringify_ids: true})
-    var stream = twitter.api.stream('statuses/filter', {follow: data.ids})
-    stream.on('tweet', tweet => {
-      var channel = twitter.channels.find(channel => channel.id === tweet.user.id_str)
-      if (channel) channel.updated = tweet.created_at
-    })
-    await twitter.follow(data.ids)
-
-    return twitter
+  static init (account, channels) {
+    return new Twitter(account, channels)
   }
 
-  constructor (account) {
-    this.channels = []
+  constructor (account, channels) {
+    this.channels = channels || []
 
     this.api = new Twit(account)
     this.cache = new Lru(5000)
@@ -34,6 +25,17 @@ class Twitter {
         else resolve(data)
       })
     })
+  }
+
+  async load () {
+    var data = await this.get('friends/ids', {stringify_ids: true})
+    var stream = this.api.stream('statuses/filter', {follow: data.ids})
+    stream.on('tweet', tweet => {
+      var channel = this.channels.find(channel => channel.id === tweet.user.id_str)
+      if (channel) channel.updated = tweet.created_at
+    })
+    await this.follow(data.ids)
+    return this.channels
   }
 
   async follow (ids) {

@@ -1,5 +1,3 @@
-var AtomicFile = require('atomic-file')
-var Twitter = require('./twitter')
 var shuffle = require('fisher-yates/inplace')
 
 class Nonlinear {
@@ -8,66 +6,42 @@ class Nonlinear {
   }
 
   constructor (opts) {
-    this.log = {}
-    this.opts = opts || {}
     this.started = Date.now()
+    this.opts = opts || {}
 
     if (!this.opts.rankTop) this.opts.rankTop = 7
   }
 
-  async start (file, accounts) {
-    this.storage = new AtomicFile(file)
-
-    if (accounts) {
-      this.twitter = await Twitter.init(accounts.twitter)
-    }
-
-    return new Promise((resolve, reject) => {
-      this.storage.get((err, log) => {
-        if (!err) this.log = log
-        resolve()
-      })
-    })
-  }
-
-  logVisit (url) {
+  logVisit (user, url) {
     var page = url.replace(/\?(.+)$/, '')
-    var time = Date.now()
-    this.log[page] = time
-    this.storage.set(this.log, err => {
-      if (err) console.warn(err)
-    })
+    var parts = page.split('/')
+    user.logVisit(parts[1], parts[2])
   }
 
-  listChannels () {
-    shuffle(this.channels)
+  listChannels (user) {
+    shuffle(user.channels)
 
-    var top = Object.keys(this.log).sort((a, b) => {
-      if (this.log[a] < this.log[b]) return 1
-      if (this.log[a] > this.log[b]) return -1
+    var top = Object.keys(user.visits).sort((a, b) => {
+      if (user.visits[a] < user.visits[b]) return 1
+      if (user.visits[a] > user.visits[b]) return -1
       return 0
     }).map(page => {
       var uri = page.split('/')[2]
-      var match = this.channels.find(channel => channel.uri === uri)
+      var match = user.channels.find(channel => channel.uri === uri)
       if (match) match.top = true
       return match
     }).filter(channel => !!channel).slice(0, this.opts.rankTop)
 
-    return this.channels.reduce((list, channel) => {
+    return user.channels.reduce((list, channel) => {
       if (list.indexOf(channel) === -1) {
         channel.top = false
         list.push(channel)
       }
       return list
     }, top).map(channel => {
-      var visited = this.log[`/${channel.medium}/${channel.uri}`]
-      channel.visited = visited || this.started
+      channel.visited = channel.visited || this.started
       return channel
     })
-  }
-
-  get channels () {
-    return this.twitter.channels
   }
 }
 
