@@ -37,6 +37,8 @@ time {
   border-radius: 9999px;
   float: left;
   margin: 0 .5em .5em 0;
+  position: relative;
+  z-index: 1;
 }
 
 .tiles {
