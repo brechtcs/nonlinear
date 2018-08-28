@@ -1,48 +1,56 @@
+html {
+  background: #222;
+  color: #fafafa;
+  font-size: 20px;
+}
+
 header {
-    background-color: white;
-    position: sticky;
-    top: 0;
-    z-index: 1;
+  background: #222;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 a {
-    color: inherit;
-    text-decoration: none;
-}
-img {
-    float: left;
-    margin: 0 .5em .5em 0;
+  color: inherit;
+  text-decoration: none;
 }
 h2 {
-    font-size: 1.1em;
-    margin: 0;
+  font-size: 1.1em;
+  margin: 0;
 }
 time {
-    font-size: smaller;
+  font-size: smaller;
+}
+
+.avatar {
+  border-radius: 9999px;
+  float: left;
+  margin: 0 .5em .5em 0;
 }
 
 .tiles {
-    display: grid;
-    grid-auto-flow: row dense;
-    grid-template-columns: repeat(auto-fill, minmax(17em, 1fr));
-    list-style: none;
-    padding: 0;
+  display: grid;
+  grid-auto-flow: row dense;
+  grid-template-columns: repeat(auto-fill, minmax(17em, 1fr));
+  list-style: none;
+  padding: 0;
 }
 .tiles + .tiles {
-    border-top: 1px solid;
-    padding-top: 1em;
+  border-top: 1px solid;
+  padding-top: 1em;
 }
 .tiles > .tile {
-    max-width: 23em;
-    overflow: hidden;
-    padding: 1em 1em 1em 0;
+  grid-column-start: auto;
+  max-width: 23em;
+  overflow: hidden;
+  padding: 1em 1em 1em 0;
 }
-.tile {
-    grid-column-start: auto;
-    opacity: .62;
+.tiles > .tile-top {
+  grid-column-start: 1;
 }
-.tile-highlight {
-    opacity: 1;
+.tile-content--regular {
+  opacity: .62;
 }
-.tile-top {
-    grid-column-start: 1;
+.tile-content--highlighted {
+  opacity: 1;
 }
