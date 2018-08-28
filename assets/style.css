@@ -1,7 +1,18 @@
+@font-face {
+  font-family: 'Ubuntu Mono';
+  src: url('fonts/UbuntuMono-R.ttf');
+}
+
 html {
   background: #222;
   color: #fafafa;
-  font-size: 20px;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 18px;
+}
+* {
+  background: inherit;
+  color: inherit;
+  font-family: inherit;
 }
 
 header {
