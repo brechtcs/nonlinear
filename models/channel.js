@@ -1,3 +1,5 @@
+var assert = require('nanoassert')
+
 class Channel {
   static from (medium, data) {
     return new Channel(medium, data)
@@ -9,7 +11,7 @@ class Channel {
 
     if (this.data.status) {
       this.updated = this.data.status.created_at
-      delete this.data.status.user
+      delete this.data.status
     }
   }
 
@@ -58,7 +60,7 @@ class Channel {
   }
 
   set updated (date) {
-    this._updated = new Date(date)
+    this._updated = new Date(date || null)
   }
 
   get visited () {
@@ -66,7 +68,16 @@ class Channel {
   }
 
   set visited (visit) {
-    this._visited = new Date(visit)
+    this._visited = new Date(visit || global.started)
+  }
+
+  get watching () {
+    return this._watching
+  }
+
+  set watching (watching) {
+    assert(typeof watching === 'boolean', '`channel.watching` should be boolean')
+    this._watching = watching
   }
 }
 

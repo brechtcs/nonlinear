@@ -5,9 +5,14 @@ var raw = require('nanohtml/raw')
 module.exports.channel = function (channel, link) {
   link = link || `/twitter/${channel.uri}`
 
-  var content = html`<div class="tile-content${channel.updated > channel.visited ? '--highlighted' : '--regular'}">
+  var content = html`<div class="tile-content${channel.updated > channel.visited ?  channel.watching ? '--highlighted' : '--updated' : '--regular'}">
     <h2><a href=${link}>${channel.name}</a></h2>
     <p>${raw(channel.description)}</p>
+    <form method="POST">
+      <select name="action">${getChannelActions(channel)}</select>
+      <input type="hidden" name="id" value=${channel.id}>
+      <input type="submit" value="confirm">
+    </form>
   </div>`
 
   return tile(channel, content, channel.top)
@@ -37,4 +42,15 @@ function date (timestamp) {
   return html`<time>
     ${moment(timestamp).format('D MMMM YYYY, H:mm')}
   </time>`
+}
+
+function getChannelActions (channel) {
+  var options = []
+
+  if (channel.watching) {
+    return html`<option value="channel-unwatch">unwatch</option>`
+  } else {
+    return html`<option value="channel-watch">watch</option>`
+  }
+  return options
 }

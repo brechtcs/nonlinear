@@ -8,6 +8,7 @@ html {
   color: #fafafa;
   font-family: 'Ubuntu Mono', monospace;
   font-size: 18px;
+  line-height: 1.2;
 }
 * {
   background: inherit;
@@ -53,6 +54,7 @@ time {
   padding-top: 1em;
 }
 .tiles > .tile {
+  cursor: default;
   grid-column-start: auto;
   max-width: 23em;
   overflow: hidden;
@@ -61,9 +63,11 @@ time {
 .tiles > .tile-top {
   grid-column-start: 1;
 }
-.tile-content--regular {
+.tile-content--regular,
+.tile-content--updated {
   opacity: .62;
 }
-.tile-content--highlighted {
+.tile-content--highlighted,
+.tile-content--updated:hover {
   opacity: 1;
 }

@@ -34,7 +34,9 @@ class User {
     }
 
     this.channels.forEach(channel => {
-      channel.visited = this.visits[`/${channel.medium}/${channel.uri}`]
+      var visited = this.visits[`/${channel.medium}/${channel.uri}`]
+      channel.visited = visited
+      channel.watching = !!visited
     })
   }
 
@@ -44,12 +46,57 @@ class User {
     })
   }
 
-  logVisit (medium, uri) {
-    var time = Date.now()
+  findChannel (id) {
+    var channel = this.channels.find(channel => channel.id === id)
+    if (!channel) {
+      throw new Error('Channel not found')
+    }
+    return channel
+  }
+
+  handleAction (data) {
+    switch (data.action) {
+      case 'channel-unwatch':
+        return this.unwatchChannel(data.id)
+      case 'channel-watch':
+        return this.watchChannel(data.id)
+      default:
+        console.error("No such action:", data.action)
+    }
+  }
+
+  logVisit (medium, uri, time) {
+    time = time || Date.now()
+
     var channel = this.channels.find(channel => channel.medium === medium && channel.uri == uri)
-    if (channel) channel.visited = time
-    this.visits[`/${medium}/${uri}`] = time
-    this.save()
+    if (channel) {
+      channel.visited = time
+      if (!channel.watching) return
+      this.visits[`/${medium}/${uri}`] = time
+      this.save()
+    }
+  }
+
+  watchChannel (id) {
+    try {
+      var channel = this.findChannel(id)
+      channel.watching = true
+      this.visits[`/${channel.medium}/${channel.uri}`] = 0
+      this.save()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  unwatchChannel (id) {
+    try {
+      var channel = this.findChannel(id)
+      channel.watching = false
+      delete this.visits[`/${channel.medium}/${channel.uri}`]
+      this.save()
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   get id () {

@@ -1,4 +1,4 @@
-var shuffle = require('fisher-yates/inplace')
+var shuffleInplace = require('fisher-yates/inplace')
 
 class Nonlinear {
   static init (opts) {
@@ -6,9 +6,7 @@ class Nonlinear {
   }
 
   constructor (opts) {
-    this.started = Date.now()
     this.opts = opts || {}
-
     if (!this.opts.rankTop) this.opts.rankTop = 7
   }
 
@@ -18,8 +16,10 @@ class Nonlinear {
     user.logVisit(parts[1], parts[2])
   }
 
-  listChannels (user) {
-    shuffle(user.channels)
+  listChannels (user, shuffle) {
+    if (shuffle) {
+      shuffleInplace(user.channels)
+    }
 
     var top = Object.keys(user.visits).sort((a, b) => {
       if (user.visits[a] < user.visits[b]) return 1
@@ -35,13 +35,21 @@ class Nonlinear {
     return user.channels.reduce((list, channel) => {
       if (list.indexOf(channel) === -1) {
         channel.top = false
-        list.push(channel)
+        if (channel.updated > this.cutoffDate) {
+          list.push(channel)
+        }
       }
       return list
     }, top).map(channel => {
-      channel.visited = channel.visited || this.started
+      channel.visited = channel.visited || global.started
       return channel
     })
+  }
+
+  get cutoffDate () {
+    var cutoff = new Date()
+    cutoff.setMonth(cutoff.getMonth() - 1)
+    return cutoff
   }
 }
 

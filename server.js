@@ -50,6 +50,7 @@ router.impl(async function (app) {
     app.clean()
 
     app.set('view', createViewMethod(res))
+    app.state.data = req.body
     app.state.method = req.method
     app.state.url = req.url
     app.state.user = users[req.session.user]
