@@ -20,7 +20,7 @@ class User {
   constructor (data, channels) {
     this.channels = channels || []
     this.data = data
-    this.storage = new AtomicFile(`./data/${data.email}.json`)
+    this.storage = new AtomicFile(`${__dirname}/../data/${data.email}.json`)
 
     if (data.accounts && data.accounts.twitter) {
       this.twitter = Twitter.init(data.accounts.twitter, channels)
