@@ -16,6 +16,7 @@ router.impl(async function (app) {
 
   app.keep('logger', createLogger())
 
+  server.enable('trust proxy')
   server.use(serveStatic('assets'))
   server.use(bodyParser.urlencoded({extended: false}))
   server.use(session({secret: 'blah', saveUninitialized: false, resave: false}))
@@ -99,7 +100,7 @@ function sendTokenByMail (token, uid, recipient, cb, req) {
   var msg = dedent`
     Hello human,
 
-    Login to http://${req.headers.host}?token=${token}&uid=${encodeURIComponent(uid)}
+    Login to ${req.protocol}://${req.headers.host}?token=${token}&uid=${encodeURIComponent(uid)}
 
     Cheers,
 
