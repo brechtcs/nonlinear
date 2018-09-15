@@ -4,6 +4,7 @@ var bodyParser = require('body-parser')
 var dedent = require('dedent')
 var express = require('express')
 var passwordless = require('passwordless')
+var sendmail = require('email')
 var serveStatic = require('serve-static')
 var session = require('express-session')
 var views = require('./views/server')
@@ -19,9 +20,14 @@ router.impl(async function (app) {
   server.enable('trust proxy')
   server.use(serveStatic('assets'))
   server.use(bodyParser.urlencoded({extended: false}))
-  server.use(session({secret: 'blah', saveUninitialized: false, resave: false}))
+  server.use(session({
+    maxAge: 2 * 24 * 60 * 60 * 1000,
+    secret: 'blah',
+    saveUninitialized: false,
+    resave: false
+  }))
 
-  passwordless.init(new MemoryStore())
+  passwordless.init(new MemoryStore(), {allowTokenReuse: true})
   passwordless.addDelivery(sendTokenByMail)
 
   server.use(passwordless.sessionSupport())
@@ -108,6 +114,15 @@ function sendTokenByMail (token, uid, recipient, cb, req) {
     Nonlinear
   `
 
+  if (true) {
+    var mail = new sendmail.Email({
+      from:  'no-reply@nonlinear.yarf.xyz',
+      to: recipient,
+      subject: 'Nonlinear login',
+      body: msg
+    })
+    mail.send()
+  }
   console.log(msg)
   cb()
 }
