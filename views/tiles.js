@@ -5,7 +5,7 @@ var raw = require('nanohtml/raw')
 module.exports.channel = function (channel, link) {
   link = link || `/twitter/${channel.uri}`
 
-  var content = html`<div class="tile-content${channel.updated > channel.visited ?  channel.watching ? '--highlighted' : '--updated' : '--regular'}">
+  var content = html`<div>
     <h2><a href=${link}>${channel.name}</a></h2>
     <p>${raw(channel.description)}</p>
     <form method="POST">
@@ -15,12 +15,16 @@ module.exports.channel = function (channel, link) {
     </form>
   </div>`
 
-  return tile(channel, content, channel.top)
+  var effect = channel.watching ? 'shine' : 'twinkle'
+  if (channel.updated < channel.visited) {
+    effect += ' dimmed'
+  }
+  return tile(channel, content, channel.top, effect)
 }
 
 module.exports.status = function (status, visited) {
   var channel = status.channel
-  var content = html`<div class="tile-content${status.updated > visited ? '--highlighted' : '--regular'}">
+  var content = html`<div>
     <h2><a href="/twitter/${channel.uri}">${channel.name}</a></h2>
     <a href="https://twitter.com/${channel.uri}/status/${status.id}">
       ${date(status.timestamp)}
@@ -28,11 +32,11 @@ module.exports.status = function (status, visited) {
     <p>${raw(status.content)}</p>
   </div>`
 
-  return tile(channel, content)
+  return tile(channel, content, false, status.updated < visited && 'dimmed')
 }
 
-function tile (channel, content, top) {
-  return html`<div class="tile${top ? ' tile-top' : ''}">
+function tile (channel, content, top, effect) {
+  return html`<div class="tile${top ? ' tile-top' : ''} ${effect ? effect : ''}">
     <img src=${channel.avatar} class="avatar">
     ${content}
   </div>`

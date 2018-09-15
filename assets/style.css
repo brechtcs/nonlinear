@@ -63,11 +63,60 @@ time {
 .tiles > .tile-top {
   grid-column-start: 1;
 }
-.tile-content--regular,
-.tile-content--updated {
+
+.dimmed > * {
   opacity: .62;
 }
-.tile-content--highlighted,
-.tile-content--updated:hover {
-  opacity: 1;
+.hide, .shine, .twinkle {
+  opacity: 0;
+}
+.shine {
+  animation: shine 9s infinite;
+}
+.twinkle {
+  animation: twinkle 9s infinite;
+}
+.hide:hover {
+  opacity: .62 !important;
+}
+.shine:hover, .twinkle:hover {
+  opacity: 1 !important;
+}
+.shine:nth-child(2n), .twinkle:nth-child(2n) {
+  animation-delay: 1s;
+}
+.shine:nth-child(3n), .twinkle:nth-child(3n) {
+  animation-delay: 2s;
+}
+.shine:nth-child(4n), .twinkle:nth-child(4n) {
+  animation-delay: 3s;
+}
+.shine:nth-child(5n), .twinkle:nth-child(5n) {
+  animation-delay: 4s;
+}
+.shine:nth-child(6n), .twinkle:nth-child(6n) {
+  animation-delay: 5s;
+}
+.shine:nth-child(7n), .twinkle:nth-child(7n) {
+  animation-delay: 6s;
+}
+.shine:nth-child(8n), .twinkle:nth-child(8n) {
+  animation-delay: 7s;
+}
+.shine:nth-child(9n), .twinkle:nth-child(9n) {
+  animation-delay: 8s;
+}
+
+@keyframes shine {
+  0% {opacity: 0}
+  10% {opacity: 1}
+  62% {opacity: 1}
+  81% {opacity: 0}
+}
+
+@keyframes twinkle {
+  0% {opacity: 0}
+  10% {opacity: 1}
+  19% {opacity: 1}
+  38% {opacity: 0}
 }
