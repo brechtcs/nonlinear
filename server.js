@@ -21,7 +21,9 @@ router.impl(async function (app) {
   server.use(serveStatic('assets'))
   server.use(bodyParser.urlencoded({extended: false}))
   server.use(session({
-    maxAge: 2 * 24 * 60 * 60 * 1000,
+    cookie: {
+      maxAge: 2 * 24 * 60 * 60 * 1000
+    },
     secret: 'blah',
     saveUninitialized: false,
     resave: false
